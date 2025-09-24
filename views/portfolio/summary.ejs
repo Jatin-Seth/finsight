@@ -1,0 +1,77 @@
+<%- include('../layouts/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Portfolio: <%= portfolio.name %></h2>
+    <div>
+        <a href="/demo/dashboard" style="margin-right: 10px;">← Dashboard</a>
+        <a href="/demo/logout">Logout</a>
+    </div>
+</div>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div>
+            <strong>Total Value:</strong><br>
+            <span style="font-size: 1.5em; color: #4CAF50;">$<%= totalValue.toFixed(2) %></span>
+        </div>
+        <div>
+            <strong>Total Cost:</strong><br>
+            <span style="font-size: 1.2em;">$<%= totalCost.toFixed(2) %></span>
+        </div>
+        <div>
+            <strong>Unrealized P/L:</strong><br>
+            <span style="font-size: 1.2em; color: <%= unrealizedPL >= 0 ? '#4CAF50' : '#f44336' %>;">
+                $<%= unrealizedPL.toFixed(2) %>
+            </span>
+        </div>
+    </div>
+</div>
+
+<h3>Holdings</h3>
+<% if (holdings && holdings.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Quantity</th>
+            <th>Avg Cost</th>
+            <th>Market Price</th>
+            <th>Market Value</th>
+            <th>P/L</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% holdings.forEach(h => { %>
+            <tr>
+                <td><strong><%= h.symbol %></strong></td>
+                <td><%= h.quantity %></td>
+                <td>$<%= h.avgCost.toFixed(2) %></td>
+                <td>$<%= h.marketPrice.toFixed(2) %></td>
+                <td>$<%= h.marketValue.toFixed(2) %></td>
+                <td style="color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
+                    $<%= (h.marketValue - (h.quantity * h.avgCost)).toFixed(2) %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No holdings in this portfolio yet.</p>
+<% } %>
+
+<div style="margin-top: 30px;">
+    <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
+       style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+        Add Transaction
+    </a>
+    <a href="/demo/portfolio/<%= portfolio._id %>/transactions"
+       style="background-color: #2196F3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+        View Transactions
+    </a>
+    <a href="/demo/portfolio/<%= portfolio._id %>/alerts"
+       style="background-color: #FF9800; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+        View Alerts
+    </a>
+</div>
+
+<%- include('../layouts/footer') %>

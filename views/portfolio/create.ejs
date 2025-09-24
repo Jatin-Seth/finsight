@@ -1,0 +1,67 @@
+<%- include('../layouts/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Create New Portfolio</h2>
+    <div>
+        <a href="/demo/dashboard" style="margin-right: 10px;">← Back to Dashboard</a>
+        <a href="/demo/logout">Logout</a>
+    </div>
+</div>
+
+<% if (error) { %>
+    <div class="alert alert-error">
+        <%= error %>
+    </div>
+<% } %>
+
+<div class="card">
+    <form action="/demo/portfolio/create" method="POST">
+        <div style="margin-bottom: 20px;">
+            <label for="name" style="display: block; margin-bottom: 5px; font-weight: 600;">Portfolio Name *</label>
+            <input type="text" id="name" name="name" required placeholder="e.g., My Investment Portfolio"
+                   style="width: 100%; max-width: 400px;">
+            <small style="color: #666; display: block; margin-top: 5px;">
+                Give your portfolio a descriptive name
+            </small>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <label for="currency" style="display: block; margin-bottom: 5px; font-weight: 600;">Base Currency</label>
+            <select id="currency" name="currency" style="width: 100%; max-width: 400px;">
+                <option value="USD" selected>USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="JPY">JPY - Japanese Yen</option>
+                <option value="CAD">CAD - Canadian Dollar</option>
+                <option value="AUD">AUD - Australian Dollar</option>
+                <option value="INR">INR - Indian Rupee</option>
+            </select>
+            <small style="color: #666; display: block; margin-top: 5px;">
+                All values will be displayed in this currency
+            </small>
+        </div>
+
+        <div>
+            <button type="submit" style="background-color: #4CAF50; margin-right: 10px;">
+                Create Portfolio
+            </button>
+            <a href="/demo/dashboard"
+               style="background-color: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 4px;">
+    <h4 style="margin-top: 0; color: #2c3e50;">What's Next?</h4>
+    <p style="margin-bottom: 10px;">After creating your portfolio, you can:</p>
+    <ul style="color: #666;">
+        <li>Add buy/sell transactions to track your investments</li>
+        <li>View real-time portfolio valuation and performance</li>
+        <li>Set up price alerts for your holdings</li>
+        <li>Monitor profit/loss across all positions</li>
+    </ul>
+</div>
+
+<%- include('../layouts/footer') %>

@@ -1,0 +1,61 @@
+<%- include('../layouts/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Transactions: <%= portfolio.name %></h2>
+    <div>
+        <a href="/demo/portfolio/<%= portfolio._id %>" style="margin-right: 10px;">← Back to Portfolio</a>
+        <a href="/demo/dashboard" style="margin-right: 10px;">Dashboard</a>
+        <a href="/demo/logout">Logout</a>
+    </div>
+</div>
+
+<% if (transactions && transactions.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% transactions.forEach(t => { %>
+            <tr>
+                <td><%= t.date.toLocaleDateString() %></td>
+                <td><strong><%= t.symbol %></strong></td>
+                <td>
+                    <span style="
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            font-weight: bold;
+                            background-color: <%= t.type === 'BUY' ? '#e8f5e8' : '#ffebee' %>;
+                            color: <%= t.type === 'BUY' ? '#2e7d32' : '#c62828' %>;
+                            ">
+                        <%= t.type %>
+                    </span>
+                </td>
+                <td><%= t.qty %></td>
+                <td>$<%= t.price.toFixed(2) %></td>
+                <td>$<%= (t.qty * t.price).toFixed(2) %></td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <div class="alert alert-info">
+        <p>No transactions found for this portfolio.</p>
+    </div>
+<% } %>
+
+<div style="margin-top: 30px;">
+    <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
+       style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+        Add New Transaction
+    </a>
+</div>
+
+<%- include('../layouts/footer') %>

@@ -1,0 +1,48 @@
+<%- include('../layouts/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Welcome to Finsight<% if (user && user.name) { %>, <%= user.name %>!<% } %></h2>
+    <a href="/demo/logout" style="background-color: #f44336; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">Logout</a>
+</div>
+
+<% if (typeof error !== 'undefined' && error) { %>
+    <div style="background-color: #ffebee; border: 1px solid #f44336; padding: 10px; border-radius: 4px; color: #c62828; margin-bottom: 20px;">
+        <%= error %>
+    </div>
+<% } %>
+
+<h3>Your Portfolios</h3>
+
+<% if (portfolios && portfolios.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Portfolio Name</th>
+            <th>Currency</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% portfolios.forEach(p => { %>
+            <tr>
+                <td><%= p.name %></td>
+                <td><%= p.currency || 'USD' %></td>
+                <td><%= p.createdAt.toDateString() %></td>
+                <td>
+                    <a href="/demo/portfolio/<%= p._id %>">View</a> |
+                    <a href="/demo/portfolio/<%= p._id %>/transaction/add">Add Transaction</a>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>You don't have any portfolios yet.</p>
+<% } %>
+
+<div style="margin-top: 20px;">
+    <a href="/demo/portfolio/create" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Create New Portfolio</a>
+</div>
+
+<%- include('../layouts/footer') %>

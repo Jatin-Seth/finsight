@@ -1,0 +1,41 @@
+{
+  "name": "finsight-backend",
+  "version": "1.0.0",
+  "description": "Backend for Finsight — trading & portfolio management (Node.js + Express + MongoDB)",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "worker": "node src/jobs/priceUpdater.js",
+    "seed": "node src/utils/sampleSeed.js",
+    "test": "jest --runInBand"
+  },
+  "author": "Finsight",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "express-validator": "^6.15.0",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.2",
+    "pino": "^8.18.0"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
