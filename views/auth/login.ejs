@@ -1,16 +1,146 @@
 <%- include('../layouts/header') %>
 
-<h2>Login</h2>
-<% if (error) { %>
-    <p style="color:red;"><%= error %></p>
-<% } %>
-<form action="/demo/login" method="POST">
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br>
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
-    <button type="submit">Login</button>
-</form>
-<p>Don't have an account? <a href="/demo/signup">Sign Up</a></p>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card fade-in" style="width: 100%; max-width: 400px; margin: 2rem;">
+        <div class="card-header text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+            <h2 style="margin: 0; color: #1f2937;">Welcome Back</h2>
+            <p style="margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.875rem;">
+                Sign in to your Finsight account
+            </p>
+        </div>
+
+        <div class="card-body">
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <strong>⚠️ Sign In Failed:</strong> <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/demo/login" method="POST" class="fade-in" style="animation-delay: 0.2s;">
+                <div class="form-group">
+                    <label for="email" class="form-label">📧 Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        required 
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">🔒 Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        required 
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1.5rem;">
+                    🚀 Sign In
+                </button>
+
+                <div class="text-center">
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem;">
+                        Don't have an account yet?
+                    </p>
+                    <a href="/demo/signup" class="btn btn-outline" style="width: 100%;">
+                        ✨ Create New Account
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <div style="text-align: center; font-size: 0.75rem; color: #9ca3af;">
+                <p style="margin: 0;">
+                    🔒 Your data is secure and encrypted
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-3" style="margin-top: 3rem;">
+    <div class="card fade-in" style="animation-delay: 0.3s;">
+        <div class="card-body text-center">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #1f2937;">Portfolio Management</h4>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                Track multiple portfolios and analyze your investment performance in real-time.
+            </p>
+        </div>
+    </div>
+
+    <div class="card fade-in" style="animation-delay: 0.4s;">
+        <div class="card-body text-center">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">💹</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #1f2937;">Transaction Tracking</h4>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                Record buy/sell transactions and monitor your profit & loss automatically.
+            </p>
+        </div>
+    </div>
+
+    <div class="card fade-in" style="animation-delay: 0.5s;">
+        <div class="card-body text-center">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔔</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #1f2937;">Price Alerts</h4>
+            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                Set up intelligent alerts to stay informed about market movements.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add smooth form interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.form-input');
+        
+        inputs.forEach(input => {
+            // Add floating label effect
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+            
+            // Check if input has value on load
+            if (input.value) {
+                input.parentElement.classList.add('focused');
+            }
+        });
+
+        // Add form validation feedback
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            
+            if (!email.value || !password.value) {
+                e.preventDefault();
+                if (!email.value) {
+                    email.style.borderColor = '#ef4444';
+                }
+                if (!password.value) {
+                    password.style.borderColor = '#ef4444';
+                }
+            }
+        });
+    });
+</script>
 
 <%- include('../layouts/footer') %>

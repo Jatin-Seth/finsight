@@ -9,53 +9,307 @@
     </div>
 </div>
 
+<div style="background-color: #e3f2fd; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+    <strong>Portfolio:</strong> <%= portfolio.name %>
+    <span style="color: #666;">(<%= portfolio.currency || 'USD' %>)</span>
+</div>
+
 <% if (transactions && transactions.length > 0) { %>
-    <table>
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Symbol</th>
-            <th>Type</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total Value</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% transactions.forEach(t => { %>
+    <!-- Transaction Summary -->
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h4 style="margin-top: 0; color: #2c3e50;">Transaction Summary</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 4px;">
+                <div style="font-size: 2em; color: #4CAF50;">📈</div>
+                <div><strong>Total Transactions</strong></div>
+                <div style="font-size: 1.5em; color: #2c3e50;"><%= transactions.length %></div>
+            </div>
+            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 4px;">
+                <div style="font-size: 2em; color: #2196F3;">🛒</div>
+                <div><strong>Buy Orders</strong></div>
+                <div style="font-size: 1.5em; color: #4CAF50;">
+                    <%= transactions.filter(t => t.type === 'BUY').length %>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 4px;">
+                <div style="font-size: 2em; color: #f44336;">💰</div>
+                <div><strong>Sell Orders</strong></div>
+                <div style="font-size: 1.5em; color: #f44336;">
+                    <%= transactions.filter(t => t.type === 'SELL').length %>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 15px; background-color: white; border-radius: 4px;">
+                <div style="font-size: 2em; color: #FF9800;">📊</div>
+                <div><strong>Total Volume</strong></div>
+                <div style="font-size: 1.5em; color: #2c3e50;">
+                    $<%= transactions.reduce((sum, t) => sum + (t.qty * t.price), 0).toFixed(2) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div style="overflow-x: auto;">
+        <table style="min-width: 100%;">
+            <thead>
             <tr>
-                <td><%= t.date.toLocaleDateString() %></td>
-                <td><strong><%= t.symbol %></strong></td>
-                <td>
-                    <span style="
-                            padding: 4px 8px;
-                            border-radius: 4px;
-                            font-size: 12px;
-                            font-weight: bold;
-                            background-color: <%= t.type === 'BUY' ? '#e8f5e8' : '#ffebee' %>;
-                            color: <%= t.type === 'BUY' ? '#2e7d32' : '#c62828' %>;
-                            ">
-                        <%= t.type %>
-                    </span>
-                </td>
-                <td><%= t.qty %></td>
-                <td>$<%= t.price.toFixed(2) %></td>
-                <td>$<%= (t.qty * t.price).toFixed(2) %></td>
+                <th>Date & Time</th>
+                <th>Symbol</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Price per Share</th>
+                <th>Total Value</th>
+                <th>Status</th>
             </tr>
-        <% }) %>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <% transactions.forEach((t, index) => { %>
+                <tr style="<%= index % 2 === 0 ? 'background-color: #f8f9fa;' : '' %>">
+                    <td style="white-space: nowrap;">
+                        <div style="font-weight: 600;"><%= t.date.toLocaleDateString() %></div>
+                        <div style="font-size: 0.85em; color: #666;"><%= t.date.toLocaleTimeString() %></div>
+                    </td>
+                    <td>
+                        <strong style="font-size: 1.1em; color: #2c3e50;"><%= t.symbol %></strong>
+                    </td>
+                    <td>
+                        <span style="
+                                padding: 6px 12px;
+                                border-radius: 20px;
+                                font-size: 11px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                                background-color: <%= t.type === 'BUY' ? '#e8f5e8' : '#ffebee' %>;
+                                color: <%= t.type === 'BUY' ? '#2e7d32' : '#c62828' %>;
+                                border: 2px solid <%= t.type === 'BUY' ? '#4CAF50' : '#f44336' %>;
+                            ">
+                            <%= t.type === 'BUY' ? '🛒 BUY' : '💰 SELL' %>
+                        </span>
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">
+                        <%= t.qty.toLocaleString() %>
+                        <div style="font-size: 0.8em; color: #666;">shares</div>
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">
+                        $<%= t.price.toFixed(2) %>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="font-weight: 600; font-size: 1.1em;">
+                            $<%= (t.qty * t.price).toFixed(2) %>
+                        </div>
+                        <div style="font-size: 0.8em; color: #666;">
+                            <%= t.qty %> × $<%= t.price.toFixed(2) %>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="
+                                padding: 4px 8px;
+                                border-radius: 12px;
+                                font-size: 10px;
+                                font-weight: bold;
+                                background-color: #e8f5e8;
+                                color: #2e7d32;
+                            ">
+                            ✅ COMPLETED
+                        </span>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Transaction Statistics -->
+    <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        
+        <!-- Most Active Symbols -->
+        <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h4 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                📊 Most Active Symbols
+            </h4>
+            <% 
+                const symbolStats = {};
+                transactions.forEach(t => {
+                    if (!symbolStats[t.symbol]) symbolStats[t.symbol] = 0;
+                    symbolStats[t.symbol]++;
+                });
+                const sortedSymbols = Object.entries(symbolStats).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            %>
+            <% if (sortedSymbols.length > 0) { %>
+                <% sortedSymbols.forEach(([symbol, count], index) => { %>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                        <span style="font-weight: 600; color: #2c3e50;"><%= symbol %></span>
+                        <span style="background-color: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                            <%= count %> transactions
+                        </span>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p style="color: #666; margin: 0;">No transaction data available</p>
+            <% } %>
+        </div>
+
+        <!-- Recent Activity -->
+        <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h4 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                🕒 Recent Activity
+            </h4>
+            <% const recentTransactions = transactions.slice(0, 5); %>
+            <% recentTransactions.forEach(t => { %>
+                <div style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <strong><%= t.symbol %></strong>
+                        <span style="font-size: 0.9em; color: #666;"><%= t.date.toLocaleDateString() %></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="
+                                padding: 2px 8px;
+                                border-radius: 10px;
+                                font-size: 10px;
+                                font-weight: bold;
+                                background-color: <%= t.type === 'BUY' ? '#e8f5e8' : '#ffebee' %>;
+                                color: <%= t.type === 'BUY' ? '#2e7d32' : '#c62828' %>;
+                            ">
+                            <%= t.type %>
+                        </span>
+                        <span style="font-weight: 600;">$<%= (t.qty * t.price).toFixed(2) %></span>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
 <% } else { %>
-    <div class="alert alert-info">
-        <p>No transactions found for this portfolio.</p>
+    <!-- Empty State -->
+    <div style="text-align: center; padding: 60px 20px; background-color: #f8f9fa; border-radius: 8px; margin: 40px 0;">
+        <div style="font-size: 4em; margin-bottom: 20px; opacity: 0.5;">📊</div>
+        <h3 style="color: #2c3e50; margin-bottom: 15px;">No Transactions Yet</h3>
+        <p style="color: #666; margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
+            This portfolio doesn't have any transactions yet. Add your first buy or sell transaction to start tracking your investments.
+        </p>
+        <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
+           style="background-color: #4CAF50; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
+            🛒 Add Your First Transaction
+        </a>
     </div>
 <% } %>
 
-<div style="margin-top: 30px;">
+<!-- Action Buttons -->
+<div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
     <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
-       style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
-        Add New Transaction
+       style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-right: 10px; font-weight: 600;">
+        🛒 Add New Transaction
+    </a>
+    
+    <a href="/demo/portfolio/<%= portfolio._id %>"
+       style="background-color: #2196F3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-right: 10px; font-weight: 600;">
+        📊 Portfolio Summary
+    </a>
+    
+    <a href="/demo/portfolio/<%= portfolio._id %>/alerts"
+       style="background-color: #FF9800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 600;">
+        🔔 Price Alerts
     </a>
 </div>
+
+<!-- Export Options -->
+<div style="margin-top: 20px; padding: 20px; background-color: #f0f0f0; border-radius: 6px;">
+    <h4 style="margin-top: 0; color: #2c3e50;">📁 Export Options</h4>
+    <p style="color: #666; margin-bottom: 15px;">Download your transaction history for external analysis</p>
+    <button onclick="exportToCSV()" 
+            style="background-color: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; margin-right: 10px; cursor: pointer;">
+        📄 Export to CSV
+    </button>
+    <button onclick="printTransactions()" 
+            style="background-color: #17a2b8; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+        🖨️ Print Report
+    </button>
+</div>
+
+<script>
+    // Export to CSV functionality
+    function exportToCSV() {
+        const transactions = <%- JSON.stringify(transactions || []) %>;
+        if (transactions.length === 0) {
+            alert('No transactions to export');
+            return;
+        }
+
+        let csvContent = "Date,Symbol,Type,Quantity,Price,Total Value\n";
+        transactions.forEach(t => {
+            const date = new Date(t.date).toLocaleDateString();
+            const total = (t.qty * t.price).toFixed(2);
+            csvContent += `${date},${t.symbol},${t.type},${t.qty},${t.price.toFixed(2)},${total}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `transactions_<%= portfolio.name.replace(/\s+/g, '_') %>_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Print functionality
+    function printTransactions() {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Transactions Report - <%= portfolio.name %></title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .buy { color: #2e7d32; font-weight: bold; }
+                        .sell { color: #c62828; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Transaction Report</h1>
+                        <h2><%= portfolio.name %></h2>
+                        <p>Generated on: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Symbol</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% transactions.forEach(t => { %>
+                            <tr>
+                                <td><%= t.date.toLocaleDateString() %></td>
+                                <td><%= t.symbol %></td>
+                                <td class="<%= t.type.toLowerCase() %>"><%= t.type %></td>
+                                <td><%= t.qty %></td>
+                                <td>$<%= t.price.toFixed(2) %></td>
+                                <td>$<%= (t.qty * t.price).toFixed(2) %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    }
+</script>
 
 <%- include('../layouts/footer') %>
