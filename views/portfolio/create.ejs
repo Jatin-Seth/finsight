@@ -1,67 +1,456 @@
 <%- include('../layouts/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2>Create New Portfolio</h2>
-    <div>
-        <a href="/demo/dashboard" style="margin-right: 10px;">← Back to Dashboard</a>
-        <a href="/demo/logout">Logout</a>
+<!-- Header Section -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; border-radius: 16px; margin-bottom: 40px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; opacity: 0.3;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2;">
+        <div>
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 50%; margin-right: 20px;">
+                    <span style="font-size: 2em;">🏗️</span>
+                </div>
+                <div>
+                    <h1 style="margin: 0; font-size: 2.5em; font-weight: 700;">Create New Portfolio</h1>
+                    <p style="margin: 10px 0 0 0; font-size: 1.2em; opacity: 0.9;">Build your investment portfolio with ease</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: right;">
+            <a href="/demo/dashboard" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; margin-right: 10px; font-size: 1em; backdrop-filter: blur(10px); transition: background 0.2s ease;"
+               onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.2)'">← Dashboard</a>
+            <a href="/demo/logout" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; font-size: 1em; backdrop-filter: blur(10px); transition: background 0.2s ease;"
+               onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.2)'">Logout</a>
+        </div>
     </div>
 </div>
 
+<!-- Error Display -->
 <% if (error) { %>
-    <div class="alert alert-error">
-        <%= error %>
+    <div style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-left: 4px solid #f44336; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);">
+        <div style="display: flex; align-items: center;">
+            <span style="font-size: 1.5em; margin-right: 15px;">⚠️</span>
+            <div>
+                <div style="font-weight: 600; color: #c62828; margin-bottom: 5px;">Error</div>
+                <div style="color: #c62828;"><%= error %></div>
+            </div>
+        </div>
     </div>
 <% } %>
 
-<div class="card">
-    <form action="/demo/portfolio/create" method="POST">
-        <div style="margin-bottom: 20px;">
-            <label for="name" style="display: block; margin-bottom: 5px; font-weight: 600;">Portfolio Name *</label>
-            <input type="text" id="name" name="name" required placeholder="e.g., My Investment Portfolio"
-                   style="width: 100%; max-width: 400px;">
-            <small style="color: #666; display: block; margin-top: 5px;">
-                Give your portfolio a descriptive name
-            </small>
-        </div>
+<!-- Main Creation Form -->
+<div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 40px;">
+    
+    <!-- Form Header -->
+    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px; border-bottom: 1px solid #e0e0e0;">
+        <h2 style="margin: 0 0 10px 0; color: #2c3e50; display: flex; align-items: center;">
+            <span style="margin-right: 12px;">📊</span>
+            Portfolio Configuration
+        </h2>
+        <p style="margin: 0; color: #666; font-size: 1.1em;">Set up your new investment portfolio with custom settings</p>
+    </div>
 
-        <div style="margin-bottom: 30px;">
-            <label for="currency" style="display: block; margin-bottom: 5px; font-weight: 600;">Base Currency</label>
-            <select id="currency" name="currency" style="width: 100%; max-width: 400px;">
-                <option value="USD" selected>USD - US Dollar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="JPY">JPY - Japanese Yen</option>
-                <option value="CAD">CAD - Canadian Dollar</option>
-                <option value="AUD">AUD - Australian Dollar</option>
-                <option value="INR">INR - Indian Rupee</option>
-            </select>
-            <small style="color: #666; display: block; margin-top: 5px;">
-                All values will be displayed in this currency
-            </small>
-        </div>
+    <!-- Form Content -->
+    <div style="padding: 40px;">
+        <form action="/demo/portfolio/create" method="POST" id="portfolioForm">
+            
+            <!-- Portfolio Name Section -->
+            <div style="margin-bottom: 40px;">
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <div style="background: #e3f2fd; padding: 10px; border-radius: 50%; margin-right: 15px;">
+                        <span style="font-size: 1.3em; color: #1976d2;">📝</span>
+                    </div>
+                    <div>
+                        <label for="name" style="display: block; font-weight: 700; font-size: 1.2em; color: #2c3e50; margin-bottom: 5px;">
+                            Portfolio Name *
+                        </label>
+                        <p style="margin: 0; color: #666; font-size: 0.95em;">Choose a descriptive name for your portfolio</p>
+                    </div>
+                </div>
+                
+                <input type="text" 
+                       id="name" 
+                       name="name" 
+                       required 
+                       placeholder="e.g., My Investment Portfolio, Tech Stocks, Dividend Growth"
+                       maxlength="50"
+                       style="
+                            width: 100%; 
+                            padding: 18px 25px; 
+                            border: 2px solid #e0e0e0; 
+                            border-radius: 12px; 
+                            font-size: 1.1em; 
+                            transition: all 0.3s ease;
+                            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+                            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+                        ">
+                
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <small style="color: #666;">Make it memorable and descriptive</small>
+                    <small style="color: #666;" id="nameCounter">0/50 characters</small>
+                </div>
+            </div>
 
-        <div>
-            <button type="submit" style="background-color: #4CAF50; margin-right: 10px;">
-                Create Portfolio
-            </button>
-            <a href="/demo/dashboard"
-               style="background-color: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
-                Cancel
-            </a>
-        </div>
-    </form>
+            <!-- Currency Selection -->
+            <div style="margin-bottom: 40px;">
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <div style="background: #e8f5e8; padding: 10px; border-radius: 50%; margin-right: 15px;">
+                        <span style="font-size: 1.3em; color: #2e7d32;">💰</span>
+                    </div>
+                    <div>
+                        <label for="currency" style="display: block; font-weight: 700; font-size: 1.2em; color: #2c3e50; margin-bottom: 5px;">
+                            Base Currency
+                        </label>
+                        <p style="margin: 0; color: #666; font-size: 0.95em;">All portfolio values will be displayed in this currency</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="USD" checked style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇺🇸</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">USD</div>
+                                <div style="font-size: 0.9em; color: #666;">US Dollar</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="EUR" style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇪🇺</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">EUR</div>
+                                <div style="font-size: 0.9em; color: #666;">Euro</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="GBP" style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇬🇧</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">GBP</div>
+                                <div style="font-size: 0.9em; color: #666;">British Pound</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="JPY" style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇯🇵</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">JPY</div>
+                                <div style="font-size: 0.9em; color: #666;">Japanese Yen</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="CAD" style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇨🇦</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">CAD</div>
+                                <div style="font-size: 0.9em; color: #666;">Canadian Dollar</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label style="display: flex; align-items: center; padding: 18px 20px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; background: white;" class="currency-option">
+                        <input type="radio" name="currency" value="INR" style="margin-right: 15px; transform: scale(1.2);">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">🇮🇳</span>
+                            <div>
+                                <div style="font-weight: 600; color: #2c3e50;">INR</div>
+                                <div style="font-size: 0.9em; color: #666;">Indian Rupee</div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Portfolio Preview -->
+            <div id="portfolio-preview" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 25px; border-radius: 12px; margin-bottom: 40px; border: 2px solid #2196F3; display: none;">
+                <h4 style="margin: 0 0 15px 0; color: #1565c0; display: flex; align-items: center;">
+                    <span style="margin-right: 10px;">👁️</span>
+                    Portfolio Preview
+                </h4>
+                <div style="background: white; padding: 20px; border-radius: 8px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div>
+                            <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Portfolio Name</div>
+                            <div style="font-weight: 600; font-size: 1.1em; color: #2c3e50;" id="preview-name">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Base Currency</div>
+                            <div style="font-weight: 600; font-size: 1.1em; color: #2c3e50;" id="preview-currency">USD</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Creation Date</div>
+                            <div style="font-weight: 600; font-size: 1.1em; color: #2c3e50;" id="preview-date">Today</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Initial Value</div>
+                            <div style="font-weight: 600; font-size: 1.1em; color: #4CAF50;">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 20px; margin-top: 40px;">
+                <button type="submit" 
+                        id="createBtn"
+                        style="
+                            flex: 1; 
+                            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); 
+                            color: white; 
+                            padding: 18px 30px; 
+                            border: none; 
+                            border-radius: 12px; 
+                            font-size: 1.1em; 
+                            font-weight: 600; 
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+                            position: relative;
+                            overflow: hidden;
+                        ">
+                    <span style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
+                        <span style="margin-right: 10px;">🚀</span>
+                        Create Portfolio
+                    </span>
+                </button>
+                
+                <a href="/demo/dashboard"
+                   style="
+                        flex: 0 0 auto; 
+                        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); 
+                        color: white; 
+                        padding: 18px 30px; 
+                        text-decoration: none; 
+                        border-radius: 12px; 
+                        font-size: 1.1em; 
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
-<div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 4px;">
-    <h4 style="margin-top: 0; color: #2c3e50;">What's Next?</h4>
-    <p style="margin-bottom: 10px;">After creating your portfolio, you can:</p>
-    <ul style="color: #666;">
-        <li>Add buy/sell transactions to track your investments</li>
-        <li>View real-time portfolio valuation and performance</li>
-        <li>Set up price alerts for your holdings</li>
-        <li>Monitor profit/loss across all positions</li>
-    </ul>
+<!-- Portfolio Types Guide -->
+<div style="background: white; border-radius: 16px; padding: 30px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+    <h3 style="margin: 0 0 25px 0; color: #2c3e50; display: flex; align-items: center;">
+        <span style="margin-right: 12px;">💡</span>
+        Portfolio Ideas & Tips
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+        <div style="border: 2px solid #e8f5e8; border-radius: 12px; padding: 20px; transition: all 0.3s ease;" 
+             onmouseover="this.style.borderColor='#4CAF50'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'"
+             onmouseout="this.style.borderColor='#e8f5e8'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            <div style="background: #4CAF50; color: white; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                <span style="font-size: 1.5em;">🚀</span>
+            </div>
+            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Growth Portfolio</h4>
+            <p style="margin: 0; color: #666; line-height: 1.6;">Focus on high-growth stocks like tech companies, emerging markets, and innovative sectors for long-term capital appreciation.</p>
+        </div>
+
+        <div style="border: 2px solid #e3f2fd; border-radius: 12px; padding: 20px; transition: all 0.3s ease;" 
+             onmouseover="this.style.borderColor='#2196F3'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'"
+             onmouseout="this.style.borderColor='#e3f2fd'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            <div style="background: #2196F3; color: white; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                <span style="font-size: 1.5em;">💰</span>
+            </div>
+            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Dividend Income</h4>
+            <p style="margin: 0; color: #666; line-height: 1.6;">Build steady income with dividend-paying stocks from established companies, REITs, and utility sectors.</p>
+        </div>
+
+        <div style="border: 2px solid #fff3cd; border-radius: 12px; padding: 20px; transition: all 0.3s ease;" 
+             onmouseover="this.style.borderColor='#ffc107'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'"
+             onmouseout="this.style.borderColor='#fff3cd'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            <div style="background: #ffc107; color: white; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                <span style="font-size: 1.5em;">⚖️</span>
+            </div>
+            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Balanced Mix</h4>
+            <p style="margin: 0; color: #666; line-height: 1.6;">Diversify across growth stocks, value stocks, bonds, and international markets for balanced risk and return.</p>
+        </div>
+    </div>
 </div>
+
+<!-- Next Steps Guide -->
+<div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 30px; margin-bottom: 40px;">
+    <h3 style="margin: 0 0 25px 0; color: #2c3e50; display: flex; align-items: center;">
+        <span style="margin-right: 12px;">📋</span>
+        After Creating Your Portfolio
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div style="display: flex; align-items: flex-start;">
+            <div style="background: #4CAF50; color: white; padding: 8px; border-radius: 50%; margin-right: 15px; font-weight: bold; font-size: 0.9em;">1</div>
+            <div>
+                <h5 style="margin: 0 0 8px 0; color: #2c3e50;">Add Transactions</h5>
+                <p style="margin: 0; color: #666; font-size: 0.95em; line-height: 1.5;">Record your buy and sell transactions to start tracking your investments.</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: flex-start;">
+            <div style="background: #2196F3; color: white; padding: 8px; border-radius: 50%; margin-right: 15px; font-weight: bold; font-size: 0.9em;">2</div>
+            <div>
+                <h5 style="margin: 0 0 8px 0; color: #2c3e50;">Monitor Performance</h5>
+                <p style="margin: 0; color: #666; font-size: 0.95em; line-height: 1.5;">Watch your portfolio value change with real-time market data updates.</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: flex-start;">
+            <div style="background: #FF9800; color: white; padding: 8px; border-radius: 50%; margin-right: 15px; font-weight: bold; font-size: 0.9em;">3</div>
+            <div>
+                <h5 style="margin: 0 0 8px 0; color: #2c3e50;">Set Price Alerts</h5>
+                <p style="margin: 0; color: #666; font-size: 0.95em; line-height: 1.5;">Get notified when your stocks reach target prices for buying or selling.</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: flex-start;">
+            <div style="background: #9C27B0; color: white; padding: 8px; border-radius: 50%; margin-right: 15px; font-weight: bold; font-size: 0.9em;">4</div>
+            <div>
+                <h5 style="margin: 0 0 8px 0; color: #2c3e50;">Analyze & Optimize</h5>
+                <p style="margin: 0; color: #666; font-size: 0.95em; line-height: 1.5;">Review performance metrics and rebalance your portfolio as needed.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.currency-option:hover {
+    border-color: #2196F3 !important;
+    background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+}
+
+.currency-option input:checked + div {
+    color: #2196F3;
+}
+
+.currency-option input:checked {
+    accent-color: #2196F3;
+}
+
+#createBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+#createBtn:active {
+    transform: translateY(-1px);
+}
+
+#name:focus {
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    background: white;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('name');
+    const nameCounter = document.getElementById('nameCounter');
+    const portfolioPreview = document.getElementById('portfolio-preview');
+    const previewName = document.getElementById('preview-name');
+    const previewCurrency = document.getElementById('preview-currency');
+    const previewDate = document.getElementById('preview-date');
+    const currencyOptions = document.querySelectorAll('input[name="currency"]');
+    const form = document.getElementById('portfolioForm');
+    const createBtn = document.getElementById('createBtn');
+
+    // Set current date
+    previewDate.textContent = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+
+    // Name input character counter and preview
+    nameInput.addEventListener('input', function() {
+        const length = this.value.length;
+        nameCounter.textContent = `${length}/50 characters`;
+        
+        if (length > 0) {
+            previewName.textContent = this.value;
+            portfolioPreview.style.display = 'block';
+        } else {
+            previewName.textContent = '-';
+            portfolioPreview.style.display = 'none';
+        }
+    });
+
+    // Currency selection preview
+    currencyOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            previewCurrency.textContent = this.value;
+        });
+    });
+
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+        const name = nameInput.value.trim();
+        
+        if (!name) {
+            e.preventDefault();
+            alert('Please enter a portfolio name');
+            nameInput.focus();
+            return;
+        }
+
+        if (name.length < 3) {
+            e.preventDefault();
+            alert('Portfolio name must be at least 3 characters long');
+            nameInput.focus();
+            return;
+        }
+
+        // Show loading state
+        createBtn.disabled = true;
+        createBtn.innerHTML = `
+            <span style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;">
+                <span style="margin-right: 10px;">⏳</span>
+                Creating Portfolio...
+            </span>
+        `;
+        createBtn.style.opacity = '0.8';
+    });
+
+    // Name input validation styling
+    nameInput.addEventListener('blur', function() {
+        if (this.value.length > 0 && this.value.length < 3) {
+            this.style.borderColor = '#f44336';
+            this.style.background = '#ffebee';
+        } else if (this.value.length >= 3) {
+            this.style.borderColor = '#4CAF50';
+            this.style.background = '#e8f5e8';
+        }
+    });
+
+    // Auto-focus name input
+    nameInput.focus();
+});
+</script>
 
 <%- include('../layouts/footer') %>

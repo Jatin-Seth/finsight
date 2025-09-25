@@ -1,77 +1,371 @@
 <%- include('../layouts/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2>Portfolio: <%= portfolio.name %></h2>
-    <div>
-        <a href="/demo/dashboard" style="margin-right: 10px;">← Dashboard</a>
-        <a href="/demo/logout">Logout</a>
+<!-- Portfolio Header -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; opacity: 0.3;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 2;">
+        <div>
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 50%; margin-right: 15px;">
+                    <span style="font-size: 1.5em;">📊</span>
+                </div>
+                <div>
+                    <h1 style="margin: 0; font-size: 2em; font-weight: 700;"><%= portfolio.name %></h1>
+                    <div style="opacity: 0.9; font-size: 1.1em; margin-top: 5px;">
+                        Portfolio Dashboard • <%= portfolio.currency || 'USD' %>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.9em; opacity: 0.8;">
+                Created: <%= portfolio.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+        </div>
+        
+        <div style="text-align: right;">
+            <a href="/demo/dashboard" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; text-decoration: none; border-radius: 20px; margin-right: 10px; font-size: 0.9em; backdrop-filter: blur(10px);">← Dashboard</a>
+            <a href="/demo/logout" style="background: rgba(255,255,255,0.2); color: white; padding: 8px 16px; text-decoration: none; border-radius: 20px; font-size: 0.9em; backdrop-filter: blur(10px);">Logout</a>
+        </div>
     </div>
 </div>
 
-<div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+<!-- Portfolio Performance Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px;">
+    
+    <!-- Total Portfolio Value -->
+    <div style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 30px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);">
+        <div style="position: absolute; top: -10px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; margin-right: 15px;">
+                <span style="font-size: 1.3em;">💰</span>
+            </div>
+            <div>
+                <div style="font-size: 0.9em; opacity: 0.9;">Total Portfolio Value</div>
+                <div style="font-size: 2.2em; font-weight: bold; margin-top: 5px;">$<%= totalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; opacity: 0.9;">
+            <span>Market Value</span>
+            <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px;">Live</span>
+        </div>
+    </div>
+
+    <!-- Total Investment -->
+    <div style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 30px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(33, 150, 243, 0.3);">
+        <div style="position: absolute; top: -10px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; margin-right: 15px;">
+                <span style="font-size: 1.3em;">📈</span>
+            </div>
+            <div>
+                <div style="font-size: 0.9em; opacity: 0.9;">Total Investment</div>
+                <div style="font-size: 2.2em; font-weight: bold; margin-top: 5px;">$<%= totalCost.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; opacity: 0.9;">
+            <span>Cost Basis</span>
+            <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px;">Total</span>
+        </div>
+    </div>
+
+    <!-- Profit/Loss -->
+    <div style="background: linear-gradient(135deg, <%= unrealizedPL >= 0 ? '#4CAF50, #45a049' : '#f44336, #d32f2f' %>); color: white; padding: 30px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 32px <%= unrealizedPL >= 0 ? 'rgba(76, 175, 80, 0.3)' : 'rgba(244, 67, 54, 0.3)' %>;">
+        <div style="position: absolute; top: -10px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; margin-right: 15px;">
+                <span style="font-size: 1.3em;"><%= unrealizedPL >= 0 ? '📊' : '📉' %></span>
+            </div>
+            <div>
+                <div style="font-size: 0.9em; opacity: 0.9;">Unrealized P/L</div>
+                <div style="font-size: 2.2em; font-weight: bold; margin-top: 5px;">
+                    <%= unrealizedPL >= 0 ? '+' : '' %>$<%= unrealizedPL.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; opacity: 0.9;">
+            <span><%= ((unrealizedPL / Math.max(totalCost, 1)) * 100).toFixed(2) %>% Return</span>
+            <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px;"><%= unrealizedPL >= 0 ? 'Profit' : 'Loss' %></span>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="background: white; padding: 25px; border-radius: 16px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+    <h3 style="margin: 0 0 20px 0; color: #2c3e50; display: flex; align-items: center;">
+        <span style="margin-right: 10px;">⚡</span>
+        Quick Actions
+    </h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-        <div>
-            <strong>Total Value:</strong><br>
-            <span style="font-size: 1.5em; color: #4CAF50;">$<%= totalValue.toFixed(2) %></span>
-        </div>
-        <div>
-            <strong>Total Cost:</strong><br>
-            <span style="font-size: 1.2em;">$<%= totalCost.toFixed(2) %></span>
-        </div>
-        <div>
-            <strong>Unrealized P/L:</strong><br>
-            <span style="font-size: 1.2em; color: <%= unrealizedPL >= 0 ? '#4CAF50' : '#f44336' %>;">
-                $<%= unrealizedPL.toFixed(2) %>
-            </span>
-        </div>
+        <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add" 
+           style="display: flex; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; text-decoration: none; border-radius: 12px; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);"
+           onmouseover="this.style.transform='translateY(-3px)'" 
+           onmouseout="this.style.transform='translateY(0)'">
+            <span style="font-size: 1.5em; margin-right: 12px;">🛒</span>
+            <div>
+                <div style="font-weight: 600;">Add Transaction</div>
+                <div style="font-size: 0.85em; opacity: 0.9;">Buy or sell stocks</div>
+            </div>
+        </a>
+        
+        <a href="/demo/portfolio/<%= portfolio._id %>/transactions" 
+           style="display: flex; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #2196F3, #1976D2); color: white; text-decoration: none; border-radius: 12px; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);"
+           onmouseover="this.style.transform='translateY(-3px)'" 
+           onmouseout="this.style.transform='translateY(0)'">
+            <span style="font-size: 1.5em; margin-right: 12px;">📋</span>
+            <div>
+                <div style="font-weight: 600;">View Transactions</div>
+                <div style="font-size: 0.85em; opacity: 0.9;">Transaction history</div>
+            </div>
+        </a>
+        
+        <a href="/demo/portfolio/<%= portfolio._id %>/alerts" 
+           style="display: flex; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #FF9800, #F57C00); color: white; text-decoration: none; border-radius: 12px; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);"
+           onmouseover="this.style.transform='translateY(-3px)'" 
+           onmouseout="this.style.transform='translateY(0)'">
+            <span style="font-size: 1.5em; margin-right: 12px;">🔔</span>
+            <div>
+                <div style="font-weight: 600;">Price Alerts</div>
+                <div style="font-size: 0.85em; opacity: 0.9;">Manage alerts</div>
+            </div>
+        </a>
     </div>
 </div>
 
-<h3>Holdings</h3>
+<!-- Holdings Section -->
+<div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 40px;">
+    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-bottom: 1px solid #e0e0e0;">
+        <h3 style="margin: 0; color: #2c3e50; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center;">
+                <span style="margin-right: 10px;">🏦</span>
+                Current Holdings
+                <span style="background: #2196F3; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; margin-left: 15px;">
+                    <%= holdings.length %> positions
+                </span>
+            </span>
+            <button onclick="refreshPrices()" 
+                    style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9em;"
+                    id="refreshBtn">
+                🔄 Refresh Prices
+            </button>
+        </h3>
+    </div>
+
+    <% if (holdings && holdings.length > 0) { %>
+        <!-- Holdings Grid View for Desktop -->
+        <div class="holdings-grid" style="display: none; padding: 25px; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            <% holdings.forEach((h, index) => { %>
+                <div style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 20px; transition: all 0.3s ease; position: relative; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);"
+                     onmouseover="this.style.borderColor='#2196F3'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'" 
+                     onmouseout="this.style.borderColor='#e0e0e0'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 1.3em; color: #2c3e50; font-weight: 700;"><%= h.symbol %></h4>
+                            <div style="color: #666; font-size: 0.9em; margin-top: 2px;"><%= h.quantity %> shares</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.2em; font-weight: 600; color: #2c3e50;">$<%= h.marketPrice.toFixed(2) %></div>
+                            <div style="font-size: 0.8em; color: #666;">per share</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <div style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Avg Cost</div>
+                                <div style="font-weight: 600; color: #2c3e50;">$<%= h.avgCost.toFixed(2) %></div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Market Value</div>
+                                <div style="font-weight: 600; color: #2c3e50;">$<%= h.marketValue.toFixed(2) %></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.85em; color: #666;">Unrealized P/L</div>
+                            <div style="font-weight: 600; font-size: 1.1em; color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
+                                <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '+' : '' %>$<%= (h.marketValue - (h.quantity * h.avgCost)).toFixed(2) %>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.85em; color: #666;">Return</div>
+                            <div style="font-weight: 600; color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
+                                <%= (((h.marketValue - (h.quantity * h.avgCost)) / Math.max((h.quantity * h.avgCost), 1)) * 100).toFixed(2) %>%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance indicator -->
+                    <div style="position: absolute; top: 15px; right: 15px;">
+                        <div style="
+                            width: 12px; 
+                            height: 12px; 
+                            border-radius: 50%; 
+                            background: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;
+                            animation: pulse 2s infinite;
+                        "></div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- Holdings Table View -->
+        <div class="holdings-table" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f8f9fa;">
+                        <th style="padding: 15px 20px; text-align: left; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">
+                            <span style="margin-right: 8px;">📊</span>Symbol
+                        </th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">Quantity</th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">Avg Cost</th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">Market Price</th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">Market Value</th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">P/L</th>
+                        <th style="padding: 15px 20px; text-align: right; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #e0e0e0;">Return %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% holdings.forEach((h, index) => { %>
+                        <tr style="<%= index % 2 === 0 ? 'background-color: #fafafa;' : 'background-color: white;' %> transition: background-color 0.2s ease;"
+                            onmouseover="this.style.backgroundColor='#e3f2fd'" 
+                            onmouseout="this.style.backgroundColor='<%= index % 2 === 0 ? '#fafafa' : 'white' %>'">
+                            <td style="padding: 15px 20px; border-bottom: 1px solid #e0e0e0;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="
+                                        width: 8px; 
+                                        height: 8px; 
+                                        border-radius: 50%; 
+                                        background: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;
+                                        margin-right: 10px;
+                                    "></div>
+                                    <strong style="font-size: 1.1em; color: #2c3e50;"><%= h.symbol %></strong>
+                                </div>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600;">
+                                <%= h.quantity.toLocaleString() %>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600;">
+                                $<%= h.avgCost.toFixed(2) %>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600;">
+                                $<%= h.marketPrice.toFixed(2) %>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600; font-size: 1.1em;">
+                                $<%= h.marketValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
+                                <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '+' : '' %>$<%= (h.marketValue - (h.quantity * h.avgCost)).toFixed(2) %>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
+                                <%= (((h.marketValue - (h.quantity * h.avgCost)) / Math.max((h.quantity * h.avgCost), 1)) * 100).toFixed(2) %>%
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <!-- Empty Holdings State -->
+        <div style="text-align: center; padding: 80px 40px;">
+            <div style="font-size: 4em; margin-bottom: 20px; opacity: 0.3;">🏦</div>
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">No Holdings Yet</h3>
+            <p style="color: #666; margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                Start building your portfolio by adding your first transaction. Track your investments and watch your wealth grow.
+            </p>
+            <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
+               style="display: inline-flex; align-items: center; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: transform 0.2s ease;"
+               onmouseover="this.style.transform='translateY(-3px)'" 
+               onmouseout="this.style.transform='translateY(0)'">
+                <span style="font-size: 1.2em; margin-right: 10px;">🛒</span>
+                Add Your First Transaction
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<!-- View Toggle for Holdings -->
 <% if (holdings && holdings.length > 0) { %>
-    <table>
-        <thead>
-        <tr>
-            <th>Symbol</th>
-            <th>Quantity</th>
-            <th>Avg Cost</th>
-            <th>Market Price</th>
-            <th>Market Value</th>
-            <th>P/L</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% holdings.forEach(h => { %>
-            <tr>
-                <td><strong><%= h.symbol %></strong></td>
-                <td><%= h.quantity %></td>
-                <td>$<%= h.avgCost.toFixed(2) %></td>
-                <td>$<%= h.marketPrice.toFixed(2) %></td>
-                <td>$<%= h.marketValue.toFixed(2) %></td>
-                <td style="color: <%= (h.marketValue - (h.quantity * h.avgCost)) >= 0 ? '#4CAF50' : '#f44336' %>;">
-                    $<%= (h.marketValue - (h.quantity * h.avgCost)).toFixed(2) %>
-                </td>
-            </tr>
-        <% }) %>
-        </tbody>
-    </table>
-<% } else { %>
-    <p>No holdings in this portfolio yet.</p>
+<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h4 style="margin: 0; color: #2c3e50;">Display Options</h4>
+        <div>
+            <button onclick="toggleView('table')" id="tableViewBtn" 
+                    style="background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 8px 0 0 8px; cursor: pointer;">
+                📋 Table View
+            </button>
+            <button onclick="toggleView('grid')" id="gridViewBtn" 
+                    style="background: #e0e0e0; color: #666; border: none; padding: 8px 16px; border-radius: 0 8px 8px 0; cursor: pointer;">
+                🔲 Grid View
+            </button>
+        </div>
+    </div>
+</div>
 <% } %>
 
-<div style="margin-top: 30px;">
-    <a href="/demo/portfolio/<%= portfolio._id %>/transaction/add"
-       style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-right: 10px;">
-        Add Transaction
-    </a>
-    <a href="/demo/portfolio/<%= portfolio._id %>/transactions"
-       style="background-color: #2196F3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-right: 10px;">
-        View Transactions
-    </a>
-    <a href="/demo/portfolio/<%= portfolio._id %>/alerts"
-       style="background-color: #FF9800; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
-        View Alerts
-    </a>
-</div>
+<style>
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+@media (max-width: 768px) {
+    .holdings-table table {
+        font-size: 0.9em;
+    }
+    
+    .holdings-table th,
+    .holdings-table td {
+        padding: 10px 8px !important;
+    }
+}
+</style>
+
+<script>
+    function toggleView(view) {
+        const tableView = document.querySelector('.holdings-table');
+        const gridView = document.querySelector('.holdings-grid');
+        const tableBtn = document.getElementById('tableViewBtn');
+        const gridBtn = document.getElementById('gridViewBtn');
+
+        if (view === 'table') {
+            tableView.style.display = 'block';
+            gridView.style.display = 'none';
+            tableBtn.style.background = '#2196F3';
+            tableBtn.style.color = 'white';
+            gridBtn.style.background = '#e0e0e0';
+            gridBtn.style.color = '#666';
+        } else {
+            tableView.style.display = 'none';
+            gridView.style.display = 'grid';
+            gridBtn.style.background = '#2196F3';
+            gridBtn.style.color = 'white';
+            tableBtn.style.background = '#e0e0e0';
+            tableBtn.style.color = '#666';
+        }
+    }
+
+    function refreshPrices() {
+        const btn = document.getElementById('refreshBtn');
+        btn.innerHTML = '🔄 Refreshing...';
+        btn.disabled = true;
+        
+        // Simulate refresh (in real app, this would call an API)
+        setTimeout(() => {
+            btn.innerHTML = '✅ Updated';
+            setTimeout(() => {
+                btn.innerHTML = '🔄 Refresh Prices';
+                btn.disabled = false;
+            }, 2000);
+        }, 1500);
+    }
+
+    // Auto-refresh every 30 seconds (optional)
+    // setInterval(refreshPrices, 30000);
+</script>
 
 <%- include('../layouts/footer') %>

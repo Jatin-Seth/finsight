@@ -1,17 +1,229 @@
 <%- include('../layouts/header') %>
 
-<h2>Sign Up</h2>
-<% if (error) { %>
-    <p style="color:red;"><%= error %></p>
-<% } %>
-<form action="/demo/signup" method="POST">
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br>
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
-    <button type="submit">Sign Up</button>
-</form>
-<p>Already have an account? <a href="/demo/login">Login</a></p>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card fade-in" style="width: 100%; max-width: 450px; margin: 2rem;">
+        <div class="card-header text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+            <h2 style="margin: 0; color: #1f2937;">Join Finsight</h2>
+            <p style="margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.875rem;">
+                Create your account and start managing your investments
+            </p>
+        </div>
+
+        <div class="card-body">
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <strong>⚠️ Registration Failed:</strong> <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/demo/signup" method="POST" class="fade-in" style="animation-delay: 0.2s;">
+                <div class="form-group">
+                    <label for="name" class="form-label">👤 Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                    >
+                    <span class="form-help">Optional: We'll use this to personalize your experience</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">📧 Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        required 
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                    >
+                    <span class="form-help">We'll use this for your account login</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">🔒 Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        required 
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                        minlength="6"
+                    >
+                    <span class="form-help">Must be at least 6 characters long</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">🔐 Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-input" 
+                        required 
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                    >
+                    <span class="form-help" id="passwordMatch" style="color: #6b7280;"></span>
+                </div>
+
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 0.5rem; border: 1px solid #bbf7d0; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                        <div style="color: #16a34a; margin-top: 0.125rem;">✅</div>
+                        <div style="font-size: 0.875rem; color: #15803d;">
+                            <strong>Free Account Includes:</strong>
+                            <ul style="margin: 0.5rem 0 0 0; padding-left: 1rem; line-height: 1.6;">
+                                <li>Unlimited portfolio tracking</li>
+                                <li>Real-time performance analysis</li>
+                                <li>Price alerts and notifications</li>
+                                <li>Secure data encryption</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="width: 100%; margin-bottom: 1.5rem;" id="submitBtn">
+                    🚀 Create Account
+                </button>
+
+                <div class="text-center">
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem;">
+                        Already have an account?
+                    </p>
+                    <a href="/demo/login" class="btn btn-outline" style="width: 100%;">
+                        🔐 Sign In Instead
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <div style="text-align: center; font-size: 0.75rem; color: #9ca3af;">
+                <p style="margin: 0;">
+                    By creating an account, you agree to keep your financial data secure
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card fade-in" style="margin-top: 3rem; animation-delay: 0.6s;">
+    <div class="card-body">
+        <div class="grid grid-2">
+            <div>
+                <h4 style="margin: 0 0 1rem 0; color: #1f2937; display: flex; align-items: center; gap: 0.5rem;">
+                    🛡️ Security & Privacy
+                </h4>
+                <div style="font-size: 0.875rem; color: #6b7280; line-height: 1.6;">
+                    <p style="margin-bottom: 1rem;">
+                        Your financial data security is our top priority. We use industry-standard encryption and never share your personal information.
+                    </p>
+                    <ul style="margin: 0; padding-left: 1.25rem;">
+                        <li>End-to-end data encryption</li>
+                        <li>Secure authentication</li>
+                        <li>Privacy-first design</li>
+                        <li>No data sharing with third parties</li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <h4 style="margin: 0 0 1rem 0; color: #1f2937; display: flex; align-items: center; gap: 0.5rem;">
+                    🚀 Get Started Quickly
+                </h4>
+                <div style="font-size: 0.875rem; color: #6b7280; line-height: 1.6;">
+                    <p style="margin-bottom: 1rem;">
+                        After creating your account, you'll be able to start tracking your investments immediately with our intuitive interface.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #22c55e;">✓</span>
+                            <span>Create portfolios in seconds</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #22c55e;">✓</span>
+                            <span>Import existing transactions</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #22c55e;">✓</span>
+                            <span>Set up alerts instantly</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordMatch = document.getElementById('passwordMatch');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function validatePasswords() {
+            const pwd = password.value;
+            const confirmPwd = confirmPassword.value;
+
+            if (confirmPwd === '') {
+                passwordMatch.textContent = '';
+                confirmPassword.style.borderColor = '';
+                return;
+            }
+
+            if (pwd === confirmPwd) {
+                passwordMatch.textContent = '✅ Passwords match';
+                passwordMatch.style.color = '#16a34a';
+                confirmPassword.style.borderColor = '#22c55e';
+            } else {
+                passwordMatch.textContent = '❌ Passwords do not match';
+                passwordMatch.style.color = '#dc2626';
+                confirmPassword.style.borderColor = '#ef4444';
+            }
+        }
+
+        function validatePasswordStrength() {
+            const pwd = password.value;
+            if (pwd.length === 0) return;
+
+            if (pwd.length < 6) {
+                password.style.borderColor = '#ef4444';
+            } else {
+                password.style.borderColor = '#22c55e';
+            }
+        }
+
+        password.addEventListener('input', validatePasswordStrength);
+        confirmPassword.addEventListener('input', validatePasswords);
+        password.addEventListener('input', validatePasswords);
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('Passwords do not match. Please check and try again.');
+            }
+        });
+
+        // Add smooth focus effects
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
 
 <%- include('../layouts/footer') %>
-
